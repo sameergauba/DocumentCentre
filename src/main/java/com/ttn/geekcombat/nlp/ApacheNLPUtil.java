@@ -24,35 +24,31 @@ public class ApacheNLPUtil {
         InputStream inputStream = new FileInputStream("src/main/resources/apache/opennlp/en-pos-maxent.bin");
         POSModel model = new POSModel(inputStream);
 
-        // Instantiating POSTaggerME class
         POSTaggerME tagger = new POSTaggerME(model);
 
-        // Tokenizing the sentence using WhitespaceTokenizer class
         WhitespaceTokenizer whitespaceTokenizer = WhitespaceTokenizer.INSTANCE;
         String[] tokens = whitespaceTokenizer.tokenize(document);
 
-        // Generating tags
         String[] tags = tagger.tag(tokens);
 
-        // Instantiating the POSSample class
         POSSample sample = new POSSample(tokens, tags);
         String[] words = sample.getSentence();
         String[] partsOfSpeech = sample.getTags();
 
-        double [] probs = tagger.probs();
+        double [] probabilities = tagger.probs();
 
-        apacheNLPWordClassificationDTOS = getApacheNLPDTOs(words, partsOfSpeech, probs, apacheNLPWordClassificationDTOS);
+        apacheNLPWordClassificationDTOS = getApacheNLPDTOs(words, partsOfSpeech, probabilities, apacheNLPWordClassificationDTOS);
 
         return apacheNLPWordClassificationDTOS;
     }
 
-    private static List<ApacheNLPWordClassificationDTO> getApacheNLPDTOs(String[] words, String[] partsOfSpeech, double[] probs, List<ApacheNLPWordClassificationDTO> apacheNLPWordClassificationDTOS) {
+    private static List<ApacheNLPWordClassificationDTO> getApacheNLPDTOs(String[] words, String[] partsOfSpeech, double[] probabilities, List<ApacheNLPWordClassificationDTO> apacheNLPWordClassificationDTOS) {
         if(words != null && words.length>0){
             for(int i=0; i<words.length; i++){
                 ApacheNLPWordClassificationDTO dto = new ApacheNLPWordClassificationDTO();
                 dto.setWord(words[i]);
                 dto.setPartOfSpeech(partsOfSpeech[i]);
-                dto.setProbability(probs[i]);
+                dto.setProbability(probabilities[i]);
             }
         }
         return apacheNLPWordClassificationDTOS;
